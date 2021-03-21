@@ -1,7 +1,5 @@
-import java.util.Vector;
-
 public class Matriz3x3 {
-	double amatriz[][] = new double[3][3];
+	double[][] amatriz = new double[3][3];
 	
 	public void setIdentity() {
 		amatriz[0][0] = 1;
