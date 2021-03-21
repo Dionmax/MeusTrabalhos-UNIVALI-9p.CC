@@ -10,6 +10,4 @@ public class Vetor2d {
 		this.y = y;
 		this.w = w;
 	}
-	
-	
 }

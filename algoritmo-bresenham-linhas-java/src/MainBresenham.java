@@ -180,8 +180,8 @@ public class MainBresenham extends JPanel implements Runnable {
                 x1 += incrementoX1;
                 y1 += incrementoY1;
             }
-
         }
+
     }
 
     public void drawHist() {
