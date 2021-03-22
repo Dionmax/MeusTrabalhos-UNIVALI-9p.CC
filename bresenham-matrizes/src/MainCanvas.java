@@ -44,8 +44,9 @@ public class MainCanvas extends JPanel implements Runnable {
 
     BufferedImage imgtmp = null;
 
-    Point rect[] = new Point[4];
-    Vetor2d rect2[] = new Vetor2d[4];
+    Point[] rect = new Point[4];
+    Vetor2d[] rect2 = new Vetor2d[4];
+    Matriz3x3[] rect3 = new Matriz3x3[4];
 
     public MainCanvas() {
         setSize(Largura, Altura);
@@ -175,20 +176,40 @@ public class MainCanvas extends JPanel implements Runnable {
 
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
                     mat.setTranslate(10, 0);
+                    for (int i = 0; i < rect2.length; i++) {
+                        rect2[i] = mat.multiplicaVetor(rect2[i]);
+                    }
                 }
                 if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                     mat.setTranslate(-10, 0);
+                    for (int i = 0; i < rect2.length; i++) {
+                        rect2[i] = mat.multiplicaVetor(rect2[i]);
+                    }
                 }
                 if (e.getKeyCode() == KeyEvent.VK_UP) {
                     mat.setTranslate(0, -10);
+                    for (int i = 0; i < rect2.length; i++) {
+                        rect2[i] = mat.multiplicaVetor(rect2[i]);
+                    }
                 }
                 if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                     mat.setTranslate(0, 10);
+                    for (int i = 0; i < rect2.length; i++) {
+                        rect2[i] = mat.multiplicaVetor(rect2[i]);
+                    }
                 }
 
-                System.out.println("MULTIPLICANDO");
-                for (int i = 0; i < rect2.length; i++) {
-                    rect2[i] = mat.multiplicaVetor(rect2[i]);
+                if (e.getKeyCode() == KeyEvent.VK_R) {
+
+                    for (int i = 0; i < rect2.length; i++) {
+                        mat.setTranslate(-clickX, -clickY);
+                        rect2[i] = mat.multiplicaVetor(rect2[i]);
+
+                        rect2[i] = mat.rotacionar(rect2[i], 300);
+
+                        mat.setTranslate(clickX, clickY);
+                        rect2[i] = mat.multiplicaVetor(rect2[i]);
+                    }
                 }
             }
         });
