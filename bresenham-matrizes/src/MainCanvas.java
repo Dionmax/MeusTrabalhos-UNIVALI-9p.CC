@@ -211,6 +211,19 @@ public class MainCanvas extends JPanel implements Runnable {
                         rect2[i] = mat.multiplicaVetor(rect2[i]);
                     }
                 }
+
+                if (e.getKeyCode() == KeyEvent.VK_E) {
+
+                    for (int i = 0; i < rect2.length; i++) {
+                        mat.setTranslate(-clickX, -clickY);
+                        rect2[i] = mat.multiplicaVetor(rect2[i]);
+
+                        rect2[i] = mat.rotacionar(rect2[i], -300);
+
+                        mat.setTranslate(clickX, clickY);
+                        rect2[i] = mat.multiplicaVetor(rect2[i]);
+                    }
+                }
             }
         });
 
