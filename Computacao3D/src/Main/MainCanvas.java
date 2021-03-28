@@ -1,5 +1,9 @@
 package Main;
+
 import Math2D.*;
+import Math3D.Matriz4x4;
+import Math3D.Triangulo3d;
+import Math3D.Vetor3D;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -45,21 +49,27 @@ public class MainCanvas extends JPanel implements Runnable {
     int Altura = 480;
     int pixelSize = Largura * Altura;
 
+    Triangulo3d t1;
+    Triangulo3d t2;
+    Triangulo3d t3;
+    Triangulo3d t4;
+    double angulo = 0;
+
     Point[] rect = new Point[4];
     Vetor2d[] rect2 = new Vetor2d[4];
 
     public MainCanvas() {
         setSize(Largura, Altura);
 
-        rect[0] = new Point(10, 10);
-        rect[1] = new Point(110, 10);
-        rect[2] = new Point(110, 110);
-        rect[3] = new Point(10, 110);
+        Vetor3D p1 = new Vetor3D(300, 200, 0, 1);
+        Vetor3D p2 = new Vetor3D(400, 300, 0, 1);
+        Vetor3D p3 = new Vetor3D(200, 300, 0, 1);
+        Vetor3D p4 = new Vetor3D(300, 250, 100, 1);
 
-        rect2[0] = new Vetor2d(100, 100, 1);
-        rect2[1] = new Vetor2d(200, 100, 1);
-        rect2[2] = new Vetor2d(200, 200, 1);
-        rect2[3] = new Vetor2d(100, 200, 1);
+        t1 = new Triangulo3d(p1, p2, p3);
+        t2 = new Triangulo3d(p1, p2, p4);
+        t3 = new Triangulo3d(p2, p3, p4);
+        t4 = new Triangulo3d(p3, p1, p4);
 
         imageBuffer = new BufferedImage(Largura, Altura, BufferedImage.TYPE_4BYTE_ABGR);
 
@@ -92,53 +102,22 @@ public class MainCanvas extends JPanel implements Runnable {
 
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
                     mat.setTranslate(10, 0);
-                    for (int i = 0; i < rect2.length; i++) {
-                        rect2[i] = mat.multiplicaVetor(rect2[i]);
-                    }
                 }
                 if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                     mat.setTranslate(-10, 0);
-                    for (int i = 0; i < rect2.length; i++) {
-                        rect2[i] = mat.multiplicaVetor(rect2[i]);
-                    }
                 }
                 if (e.getKeyCode() == KeyEvent.VK_UP) {
                     mat.setTranslate(0, -10);
-                    for (int i = 0; i < rect2.length; i++) {
-                        rect2[i] = mat.multiplicaVetor(rect2[i]);
-                    }
                 }
                 if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                     mat.setTranslate(0, 10);
-                    for (int i = 0; i < rect2.length; i++) {
-                        rect2[i] = mat.multiplicaVetor(rect2[i]);
-                    }
                 }
 
-                if (e.getKeyCode() == KeyEvent.VK_R) {
-
-                    for (int i = 0; i < rect2.length; i++) {
-                        mat.setTranslate(-clickX, -clickY);
-                        rect2[i] = mat.multiplicaVetor(rect2[i]);
-
-                        rect2[i] = mat.rotacionar(rect2[i], 300);
-
-                        mat.setTranslate(clickX, clickY);
-                        rect2[i] = mat.multiplicaVetor(rect2[i]);
-                    }
+                if (e.getKeyCode() == KeyEvent.VK_W) {
+                    angulo += 15;
                 }
-
-                if (e.getKeyCode() == KeyEvent.VK_E) {
-
-                    for (int i = 0; i < rect2.length; i++) {
-                        mat.setTranslate(-clickX, -clickY);
-                        rect2[i] = mat.multiplicaVetor(rect2[i]);
-
-                        rect2[i] = mat.rotacionar(rect2[i], -300);
-
-                        mat.setTranslate(clickX, clickY);
-                        rect2[i] = mat.multiplicaVetor(rect2[i]);
-                    }
+                if (e.getKeyCode() == KeyEvent.VK_S) {
+                    angulo -= 15;
                 }
             }
         });
@@ -193,8 +172,16 @@ public class MainCanvas extends JPanel implements Runnable {
         g.setFont(f);
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, Largura, 480);
-        g.drawImage(imageBuffer, 0, 0, null);
 
+        Matriz4x4 m = new Matriz4x4();
+        m.setRotateX(angulo);
+
+        t1.desenhaSe(this, m);
+        t2.desenhaSe(this, m);
+        t3.desenhaSe(this, m);
+        t4.desenhaSe(this, m);
+
+        g.drawImage(imageBuffer, 0, 0, null);
         g.setColor(Color.black);
         g.drawString("FPS " + fps, 10, 25);
     }
@@ -299,15 +286,9 @@ public class MainCanvas extends JPanel implements Runnable {
 
             clearVideoBuffer(Color.WHITE);
 
-            drawLine((int) rect2[0].x, (int) rect2[0].y, (int) rect2[1].x, (int) rect2[1].y);
-            drawLine((int) rect2[1].x, (int) rect2[1].y, (int) rect2[2].x, (int) rect2[2].y);
-            drawLine((int) rect2[2].x, (int) rect2[2].y, (int) rect2[3].x, (int) rect2[3].y);
-            drawLine((int) rect2[3].x, (int) rect2[3].y, (int) rect2[0].x, (int) rect2[0].y);
-
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 
