@@ -1,6 +1,4 @@
 package Main;
-
-import Math2D.*;
 import Math3D.Matriz4x4;
 import Math3D.Triangulo3d;
 import Math3D.Vetor3D;
@@ -15,11 +13,11 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
-import java.io.IOException;
 import java.util.Random;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+
+import static Math3D.Matriz4x4.vetorUnitario;
 
 public class MainCanvas extends JPanel implements Runnable {
 
@@ -32,7 +30,6 @@ public class MainCanvas extends JPanel implements Runnable {
 
     Random rand = new Random();
 
-    byte[] memoriaPlacaVideo;
     short[][] paleta;
 
     int framecount = 0;
@@ -47,7 +44,6 @@ public class MainCanvas extends JPanel implements Runnable {
 
     int Largura = 640;
     int Altura = 480;
-    int pixelSize = Largura * Altura;
 
     Triangulo3d t1;
     Triangulo3d t2;
@@ -55,8 +51,7 @@ public class MainCanvas extends JPanel implements Runnable {
     Triangulo3d t4;
     double angulo = 0;
 
-    Point[] rect = new Point[4];
-    Vetor2d[] rect2 = new Vetor2d[4];
+    Vetor3D vetorRotacao = new Vetor3D(1, 1, 1, 1);
 
     public MainCanvas() {
         setSize(Largura, Altura);
@@ -97,27 +92,24 @@ public class MainCanvas extends JPanel implements Runnable {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                Matriz3x3 mat = new Matriz3x3();
-                mat.setIdentity();
-
-                if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                    mat.setTranslate(10, 0);
-                }
-                if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                    mat.setTranslate(-10, 0);
-                }
-                if (e.getKeyCode() == KeyEvent.VK_UP) {
-                    mat.setTranslate(0, -10);
-                }
-                if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    mat.setTranslate(0, 10);
-                }
-
                 if (e.getKeyCode() == KeyEvent.VK_W) {
                     angulo += 15;
                 }
+
                 if (e.getKeyCode() == KeyEvent.VK_S) {
                     angulo -= 15;
+                }
+
+                if (e.getKeyCode() == KeyEvent.VK_X) {
+                    vetorRotacao = vetorUnitario(p1);
+                }
+
+                if (e.getKeyCode() == KeyEvent.VK_Y) {
+                    vetorRotacao = vetorUnitario(p2);
+                }
+
+                if (e.getKeyCode() == KeyEvent.VK_Z) {
+                    vetorRotacao = vetorUnitario(p3);
                 }
             }
         });
@@ -133,6 +125,8 @@ public class MainCanvas extends JPanel implements Runnable {
                 // TODO Auto-generated method stub
                 clickX = e.getX();
                 clickY = e.getY();
+
+                vetorRotacao = vetorUnitario(new Vetor3D(clickX, clickY, 0, 0));
             }
 
             @Override
@@ -174,7 +168,7 @@ public class MainCanvas extends JPanel implements Runnable {
         g.fillRect(0, 0, Largura, 480);
 
         Matriz4x4 m = new Matriz4x4();
-        m.setRotateX(angulo);
+        m.rotacionar3D(vetorRotacao, angulo);
 
         t1.desenhaSe(this, m);
         t2.desenhaSe(this, m);
@@ -207,20 +201,13 @@ public class MainCanvas extends JPanel implements Runnable {
     }
 
     public void drawLine(int x1, int y1, int x2, int y2) {
-
-        //variaveis auxiliares para alteração dos pixels
-
         int deltaX = x2 - x1;
 
         int deltaY = y2 - y1;
 
-        //armazenamento dos eixos
-
         int eixoMaior, eixoMenor;
 
         int incrementoX0 = 0, incrementoY0 = 0, incrementoX1 = 0, incrementoY1 = 0, numerador;
-
-        //testes para analisar se os eixos estão crescendo ou decrescendo de acordo com o delta
 
         if (deltaX > 0) {
             incrementoX0 = incrementoX1 = 1;
