@@ -11,7 +11,7 @@ public class Server {
         try{
             String portString = JOptionPane.showInputDialog("Digite a Porta do Servidor Multicast: ");
             int port = Integer.parseInt(portString);
-            String addrGroup = JOptionPane.showInputDialog("Digite o Endere�o de Multicast do grupo: ");
+            String addrGroup = JOptionPane.showInputDialog("Digite o Endereço de Multicast do grupo: ");
             InetAddress addr = InetAddress.getByName(addrGroup);
 
             MulticastSocket socket = new MulticastSocket(port);
